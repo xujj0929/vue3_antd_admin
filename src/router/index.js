@@ -1,25 +1,36 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import {
+	createRouter,
+	createWebHistory,
+	createWebHashHistory,
+} from 'vue-router';
+import { beforeEach } from './permission';
 
 const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
-]
+	{
+		path: '/',
+		name: 'Home',
+		component: () => import(/* webpackChunkName: "home" */ '@page/Home'),
+	},
+	{
+		path: '/about',
+		name: 'About',
+		component: () => import(/* webpackChunkName: "about" */ '@page/About'),
+	},
+	{
+		path: '/login',
+		name: 'Login',
+		component: () => import(/* webpackChunkName: "login" */ '@page/Login'),
+	},
+];
 
+const isProduction = process.env.NODE_ENV === 'production';
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes
-})
+	history: isProduction
+		? createWebHashHistory()
+		: createWebHistory(process.env.BASE_URL),
+	routes,
+});
 
-export default router
+router.beforeEach(beforeEach);
+
+export default router;
